@@ -18,7 +18,6 @@ namespace AspNetServer
 
 		public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
 		{
-			loggerFactory.AddConsole();
 			app.UseMvc();
 		}
 	}

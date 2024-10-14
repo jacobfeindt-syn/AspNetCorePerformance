@@ -11,7 +11,8 @@ namespace AspNetClient
 {
 	class Program
 	{
-		private const string _BASE_URL = "https://localhost:5001/";
+        //private const string _BASE_URL = "https://localhost:5001/";
+        private const string _BASE_URL = "https://localhost:56837/";
 
 		static void Main(string[] args)
 		{
@@ -26,7 +27,13 @@ namespace AspNetClient
 				var bytes = Helpers.GetRandomBytes(20);
 
 				PingServer(client).Wait();
-				Upload(client, bytes, false).Wait();
+
+				string oneGig = @"C:\Uncompressed\1GB.zip";
+				UploadMultipartFile(client, oneGig, true);
+
+
+
+                Upload(client, bytes, false).Wait();
 				Upload(client, bytes, false).Wait();
 				Upload(client, bytes, false).Wait();
 				Upload(client, bytes, true).Wait();
@@ -94,9 +101,11 @@ namespace AspNetClient
 			}
 		}
 
-		private static async Task UploadMultipart(HttpClient client, byte[] bytes, bool useReader)
-		{
-			var sw = Stopwatch.StartNew();
+
+        //private static async Task UploadMultipart(HttpClient client, string fileName, bool useReader)
+        private static async Task UploadMultipart(HttpClient client, byte[] bytes, bool useReader)
+        {
+            var sw = Stopwatch.StartNew();
 
 			using (var content = new MultipartFormDataContent())
 			{
@@ -120,7 +129,45 @@ namespace AspNetClient
 			Helpers.PrintDuration("UploadMultipart using " + (useReader ? "Multipart-Reader" : "IFormFile"), bytes.Length, sw.Elapsed);
 		}
 
-		private static async Task Download(HttpClient client, bool useCustomFileResult)
+        private static async Task UploadMultipartFile(HttpClient client, string fileName, bool useReader)
+        {
+            var sw = Stopwatch.StartNew();
+
+            using (var content = new MultipartFormDataContent())
+            {
+                // Read the file as a stream
+                using (var fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read))
+                {
+                    content.Add(new StreamContent(fileStream)
+                    {
+                        Headers =
+                {
+                    ContentLength = fileStream.Length,
+                    ContentType = new MediaTypeHeaderValue("application/octet-stream")
+                }
+                    }, "File", Path.GetFileName(fileName));
+
+                    content.Add(new StringContent(42.ToString()), "SomeValue");
+
+                    using (var response = await client.PostAsync(
+                        (useReader ? "UploadMultipartUsingReader" : "UploadMultipartUsingIFormFile"),
+                        content))
+                    {
+                        await response.Content.ReadAsStreamAsync();
+                    }
+                }
+            }
+
+            sw.Stop();
+            Helpers.PrintDuration(
+                "UploadMultipart using " + (useReader ? "Multipart-Reader" : "IFormFile"),
+                (int)(new FileInfo(fileName).Length), sw.Elapsed);
+        }
+
+
+
+
+        private static async Task Download(HttpClient client, bool useCustomFileResult)
 		{
 			var sw = Stopwatch.StartNew();
 			int totalBytes;

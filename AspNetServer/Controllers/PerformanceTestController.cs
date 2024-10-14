@@ -117,7 +117,7 @@ namespace AspNetServer.Controllers
 			var element = elements.First(entry => entry.StartsWith("boundary="));
 			var boundary = element.Substring("boundary=".Length);
 
-			boundary = HeaderUtilities.RemoveQuotes(boundary);
+			//boundary = HeaderUtilities.RemoveQuotes(boundary);
 
 			return boundary;
 		}
