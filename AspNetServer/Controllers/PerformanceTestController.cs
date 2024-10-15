@@ -53,8 +53,9 @@ namespace AspNetServer.Controllers
 
 			var bufferSize = 32 * 1024;
 			var totalBytes = await Helpers.ReadStream(model.File.OpenReadStream(), bufferSize);
+            //var totalBytes = await Helpers.WriteStream(model.File.OpenReadStream(), bufferSize);
 
-			sw.Stop();
+            sw.Stop();
 			Helpers.PrintDuration($"UploadMultipartUsingIFormFile with Value={model.SomeValue}", totalBytes, sw.Elapsed);
 
 			return Ok();
@@ -80,8 +81,9 @@ namespace AspNetServer.Controllers
 				{
 					var fileSection = section.AsFileSection();
 					var bufferSize = 32 * 1024;
-					totalBytes = await Helpers.ReadStream(fileSection.FileStream, bufferSize);
-				}
+					//totalBytes = await Helpers.ReadStream(fileSection.FileStream, bufferSize);
+                    totalBytes = await Helpers.WriteStream(fileSection.FileStream, bufferSize);
+                }
 				else if (contentDispo.IsFormDisposition())
 				{
 					var formSection = section.AsFormDataSection();

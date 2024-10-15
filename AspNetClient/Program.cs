@@ -24,12 +24,12 @@ namespace AspNetClient
 			using (var client = new HttpClient(messageHandler))
 			{
 				client.BaseAddress = new Uri(_BASE_URL);
-				var bytes = Helpers.GetRandomBytes(20);
+				var bytes = Helpers.GetRandomBytes(29);
 
 				PingServer(client).Wait();
 
-				string oneGig = @"C:\Uncompressed\1GB.zip";
-				UploadMultipartFile(client, oneGig, true);
+				//string oneGig = @"C:\Uncompressed\1GB.zip";
+				//UploadMultipartFile(client, oneGig, true);
 
 
 

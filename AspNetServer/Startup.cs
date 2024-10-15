@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -14,7 +15,7 @@ namespace AspNetServer
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddMvc();
-		}
+        }
 
 		public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
 		{

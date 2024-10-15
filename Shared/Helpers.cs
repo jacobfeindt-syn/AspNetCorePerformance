@@ -36,5 +36,26 @@ namespace Shared
 			} while (bytesRead > 0);
 			return totalBytes;
 		}
-	}
+
+        public static async Task<int> WriteStream(Stream stream, int bufferSize)
+        {
+            var buffer = new byte[bufferSize];
+
+            int bytesRead;
+            int totalBytes = 0;
+
+			FileStream fs = new FileStream("C:\\Temp\\someFile.txt", FileMode.Create, FileAccess.Write);
+
+            do
+            {
+                bytesRead = await stream.ReadAsync(buffer, 0, bufferSize);
+                totalBytes += bytesRead;
+				fs.Write(buffer, 0, bytesRead);
+            } while (bytesRead > 0);
+
+			fs.Close();
+
+            return totalBytes;
+        }
+    }
 }
